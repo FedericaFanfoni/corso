@@ -1,11 +1,14 @@
 package view;
 
+import model.Corso;
 import model.Discente;
 import model.Docente;
+import service.CorsoService;
 import service.DiscenteService;
 import service.DocenteService;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Main {
@@ -14,6 +17,7 @@ public class Main {
         System.out.println("Scegli in quale menù andare.");
         System.out.println("1. Docente");
         System.out.println("2. Discente");
+        System.out.println("Corso");
 
         int scelta = scanner.nextInt();
 
@@ -57,7 +61,7 @@ public class Main {
             scanner.close();
 
         }else if(scelta == 2){
-            int choice2;
+            int choice;
 
             do {
                 System.out.println("Classe Discente");
@@ -71,8 +75,8 @@ public class Main {
                 System.out.print("inserisci la tua scelta: ");
 
                 // Read user input
-                choice2 = scanner.nextInt();
-                switch (choice2) {
+                choice = scanner.nextInt();
+                switch (choice) {
                     case 1:
                         createDiscente();
                         break;
@@ -92,10 +96,38 @@ public class Main {
                         System.out.println("scelta errata. scegliere un numero da 1 a 5");
                 }
 
-            } while (choice2 != 5);
+            } while (choice != 5);
             scanner.close();
         }else{
-            System.out.println("Scelta sbagliata");
+            int choice;
+
+            do {
+                System.out.println("Classe corso");
+
+                System.out.println("***Menu***");
+                System.out.println("1. Crea un nuovo corso");
+                System.out.println("2. Visualizza lista corsi");
+                System.out.println("5. Exit");
+                System.out.print("inserisci la tua scelta: ");
+
+                // Read user input
+                choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                        createCorso();
+                        break;
+                    case 2:
+                        readCorsi();
+                    case 5:
+                        System.out.println("exiting");
+                        break;
+                    default:
+                        System.out.println("Scelta errata. scegliere un numero da 1 a 5");
+                }
+
+            } while (choice != 5);
+            scanner.close();
+
         }
     }
 
@@ -209,5 +241,66 @@ public class Main {
             DiscenteService discenteService = new DiscenteService();
             discenteService.updateDiscente(nome, cognome, dataNascita, matricola, id);
 
+        }
+
+        private static void createCorso(){
+            System.out.println("Inserisci il nome del corso: ");
+            Scanner scanner = new Scanner(System.in);
+            String nomeCorso = scanner.next();
+
+            System.out.println("Inserisci la data di inizio");
+            String dataInizioString = scanner.next();
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate dataInizio = LocalDate.parse(dataInizioString, dateFormatter);
+
+            System.out.println("inserisci durata: ");
+            int durata = scanner.nextInt();
+
+            System.out.println("Inserisci id del docente: ");
+            int idDocente = scanner.nextInt();
+            DocenteService docenteService = new DocenteService();
+            List<Docente> listaDocenti= docenteService.readDocente();
+
+            boolean trovato = false;
+
+            for(Docente docente : listaDocenti){
+                if(docente.getid() == idDocente){
+                    trovato = true;
+                }
+            }
+
+            if(!trovato){
+                System.out.println("Nessun docente trovato con questo id");
+                return;
+            }
+
+            CorsoService corsoService = new CorsoService();
+            corsoService.createCorso(nomeCorso, dataInizio, durata, idDocente);
+
+        }
+
+        private static void readCorsi(){
+            System.out.println("Lista corsi: ");
+            CorsoService corsoService = new CorsoService();
+            ArrayList<Corso> listaCorsi = corsoService.readCorsi();
+
+            DocenteService oDocenteService = new DocenteService();
+            List<Docente> listaDocenti= oDocenteService.readDocente();
+            Docente docenteCorso = new Docente();
+
+
+            for (Corso corso : listaCorsi) {
+
+                for(int i = 0; i<listaDocenti.size(); i++){
+
+                    if(corso.getIdDocente() == listaDocenti.get(i).getid()){
+                        docenteCorso.setNome(listaDocenti.get(i).getNome());
+                        docenteCorso.setCognome(listaDocenti.get(i).getCognome());
+                        docenteCorso.setid(listaDocenti.get(i).getid());
+                    }
+                }
+
+                System.out.println(corso.getId() + " " + corso.getNomeCorso() + " , Docente: " + docenteCorso.getNome() + " " + docenteCorso.getCognome());
+            }
         }
 }
