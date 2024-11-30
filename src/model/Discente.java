@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class Discente {
 
@@ -8,6 +9,7 @@ public class Discente {
     private String cognome;
     private LocalDate dataNascita;
     private String matricola;
+    private ArrayList<Corso> listaCorsi;
     private int id;
 
     public String getNome() {
@@ -24,6 +26,10 @@ public class Discente {
 
     public String getMatricola(){
         return this.matricola;
+    }
+
+    public ArrayList<Corso> getListaCorsi(){
+        return this.listaCorsi;
     }
 
     public int getid() {
@@ -44,6 +50,10 @@ public class Discente {
 
     public void setMatricola(String matricola){
         this.matricola = matricola;
+    }
+
+    public void setListaCorsi(ArrayList<Corso> listaCorsi){
+        this.listaCorsi =  listaCorsi;
     }
 
     public void setid(int id) {

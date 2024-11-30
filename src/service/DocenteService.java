@@ -18,8 +18,12 @@ public class DocenteService {
     }
 
 
-    public List<Docente>  readDocente(){
-            return docenteRepository.readDocente();
+    public List<Docente> readDocente() {
+        return docenteRepository.readDocente();
+    }
+
+    public Docente getDocenteByID(int idDocente) {
+        return  docenteRepository.getDocenteByID(idDocente);
     }
 
 

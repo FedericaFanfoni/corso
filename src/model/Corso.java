@@ -1,28 +1,40 @@
 package model;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+
+import model.Docente;
 
 public class Corso {
 
     private String nomeCorso;
     private LocalDate dataInizio;
     private int durata;
-    private int idDocente;
+    private Docente docente;
+    private ArrayList<Discente> listaDiscenti;
     private int id;
 
-    public Corso(String nomeCorso, LocalDate dataInizio, int durata, int idDocente){
+    public Corso(String nomeCorso, LocalDate dataInizio, int durata, Docente docente){
         this.nomeCorso = nomeCorso;
         this.dataInizio = dataInizio;
         this.durata = durata;
-        this.idDocente = idDocente;
+        this.docente = docente;
     }
 
-    public Corso(String nomeCorso, LocalDate dataInizio, int durata, int idDocente, int id){
+    public Corso(String nomeCorso, LocalDate dataInizio, int durata, Docente docente, int id){
         this.nomeCorso = nomeCorso;
         this.dataInizio = dataInizio;
         this.durata = durata;
-        this.idDocente = idDocente;
+        this.docente = docente;
         this.id = id;
+    }
+
+    public Corso(String nomeCorso, LocalDate dataInizio, int durata, Docente docente, ArrayList<Discente> listaDiscenti, int id ){
+        this.nomeCorso = nomeCorso;
+        this.dataInizio = dataInizio;
+        this.durata = durata;
+        this.docente = docente;
+        this.listaDiscenti = listaDiscenti;
     }
 
     public String getNomeCorso(){
@@ -37,8 +49,12 @@ public class Corso {
         return this.durata;
     }
 
-    public int getIdDocente(){
-        return this.idDocente;
+    public Docente getDocente(){
+        return  this.docente;
+    }
+
+    public ArrayList<Discente> getListaDiscenti(){
+        return this.listaDiscenti;
     }
 
     public int getId(){
@@ -57,8 +73,12 @@ public class Corso {
         this.durata = durata;
     }
 
-    public void setIdDocente(int idDocente){
-        this.idDocente = idDocente;
+    public void setDocente(int idDocente) {
+        this.docente = docente;
+    }
+
+    public void setListaDiscenti(ArrayList<Discente> listaDiscenti){
+        this.listaDiscenti = listaDiscenti;
     }
 
     public void setId(int id){

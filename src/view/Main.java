@@ -7,7 +7,7 @@ import service.CorsoService;
 import service.DiscenteService;
 import service.DocenteService;
 
-import java.time.LocalDate;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -17,7 +17,7 @@ public class Main {
         System.out.println("Scegli in quale menù andare.");
         System.out.println("1. Docente");
         System.out.println("2. Discente");
-        System.out.println("Corso");
+        System.out.println("Altro. Corso");
 
         int scelta = scanner.nextInt();
 
@@ -33,7 +33,7 @@ public class Main {
                 System.out.println("3. Visualizza la lista di docenti");
                 System.out.println("4. Elimina un docente");
                 System.out.println("5. Exit");
-                System.out.print("inserisci la tua scelta: ");
+                System.out.print("Inserisci la tua scelta: ");
 
                 // Read user input
                 choice = scanner.nextInt();
@@ -51,10 +51,10 @@ public class Main {
                         delete();
                         break;
                     case 5:
-                        System.out.println("exiting");
+                        System.out.println("Exiting");
                         break;
                     default:
-                        System.out.println("scelta errata. scegliere un numero da 1 a 5");
+                        System.out.println("Scelta errata. scegliere un numero da 1 a 6");
                 }
 
             } while (choice != 5);
@@ -72,7 +72,7 @@ public class Main {
                 System.out.println("3. Visualizza la lista di discenti");
                 System.out.println("4. Elimina un discente");
                 System.out.println("5. Exit");
-                System.out.print("inserisci la tua scelta: ");
+                System.out.print("Inserisci la tua scelta: ");
 
                 // Read user input
                 choice = scanner.nextInt();
@@ -90,10 +90,10 @@ public class Main {
                         deleteDiscente();
                         break;
                     case 5:
-                        System.out.println("exiting");
+                        System.out.println("Exiting");
                         break;
                     default:
-                        System.out.println("scelta errata. scegliere un numero da 1 a 5");
+                        System.out.println("Scelta errata. scegliere un numero da 1 a 5");
                 }
 
             } while (choice != 5);
@@ -107,10 +107,11 @@ public class Main {
                 System.out.println("***Menu***");
                 System.out.println("1. Crea un nuovo corso");
                 System.out.println("2. Visualizza lista corsi");
+                System.out.println("3. Modifica corso");
                 System.out.println("5. Exit");
-                System.out.print("inserisci la tua scelta: ");
+                System.out.print("Inserisci la tua scelta: ");
 
-                // Read user input
+
                 choice = scanner.nextInt();
                 switch (choice) {
                     case 1:
@@ -118,6 +119,13 @@ public class Main {
                         break;
                     case 2:
                         readCorsi();
+                        break;
+                    case 3:
+                        updateCorso();
+                        break;
+                    case 4:
+                        deleteCorso();
+                        break;
                     case 5:
                         System.out.println("exiting");
                         break;
@@ -132,14 +140,13 @@ public class Main {
     }
 
         private static void read() {
-        System.out.println("ecco la lista dei docenti: ");
-        DocenteService oDocenteService = new DocenteService();
-        List<Docente> listaDocenti= oDocenteService.readDocente();
-        int i = 0;
-        while(i<listaDocenti.size()){
-            System.out.println(listaDocenti.get(i).getid()+" "+listaDocenti.get(i).getCognome()+" "+listaDocenti.get(i).getNome());
-            i++;}
+            System.out.println("Ecco la lista dei docenti: ");
+            DocenteService docenteService = new DocenteService();
+            List<Docente> listaDocenti= docenteService.readDocente();
 
+            for(Docente docente : listaDocenti) {
+                System.out.println(docente.getid() + " " + docente.getCognome() + " " + docente.getNome());
+            }
         }
 
         private static void create () {
@@ -246,36 +253,31 @@ public class Main {
         private static void createCorso(){
             System.out.println("Inserisci il nome del corso: ");
             Scanner scanner = new Scanner(System.in);
-            String nomeCorso = scanner.next();
+            String nomeCorso = scanner.nextLine();
 
             System.out.println("Inserisci la data di inizio");
-            String dataInizioString = scanner.next();
+            String dataInizioString = scanner.nextLine();
             DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
             LocalDate dataInizio = LocalDate.parse(dataInizioString, dateFormatter);
-
-            System.out.println("inserisci durata: ");
+            System.out.println("Inserisci durata: ");
             int durata = scanner.nextInt();
 
             System.out.println("Inserisci id del docente: ");
             int idDocente = scanner.nextInt();
+
             DocenteService docenteService = new DocenteService();
-            List<Docente> listaDocenti= docenteService.readDocente();
+            Docente docente;
 
-            boolean trovato = false;
-
-            for(Docente docente : listaDocenti){
-                if(docente.getid() == idDocente){
-                    trovato = true;
-                }
+            if(docenteService.getDocenteByID(idDocente).getid() == idDocente ){
+                docente = docenteService.getDocenteByID(idDocente);
             }
-
-            if(!trovato){
+            else{
                 System.out.println("Nessun docente trovato con questo id");
                 return;
             }
 
             CorsoService corsoService = new CorsoService();
-            corsoService.createCorso(nomeCorso, dataInizio, durata, idDocente);
+            corsoService.createCorso(nomeCorso, dataInizio, durata, docente);
 
         }
 
@@ -284,23 +286,52 @@ public class Main {
             CorsoService corsoService = new CorsoService();
             ArrayList<Corso> listaCorsi = corsoService.readCorsi();
 
-            DocenteService oDocenteService = new DocenteService();
-            List<Docente> listaDocenti= oDocenteService.readDocente();
-            Docente docenteCorso = new Docente();
-
-
-            for (Corso corso : listaCorsi) {
-
-                for(int i = 0; i<listaDocenti.size(); i++){
-
-                    if(corso.getIdDocente() == listaDocenti.get(i).getid()){
-                        docenteCorso.setNome(listaDocenti.get(i).getNome());
-                        docenteCorso.setCognome(listaDocenti.get(i).getCognome());
-                        docenteCorso.setid(listaDocenti.get(i).getid());
-                    }
-                }
-
-                System.out.println(corso.getId() + " " + corso.getNomeCorso() + " , Docente: " + docenteCorso.getNome() + " " + docenteCorso.getCognome());
+            for(Corso corso : listaCorsi){
+                System.out.println("Corso: "+ corso.getId() + " " + corso.getNomeCorso() + ". Docente: " + corso.getDocente().getNome() + " " + corso.getDocente().getCognome() );
             }
+
         }
+
+        public static void updateCorso(){
+            System.out.println("Inserisci il nuovo nome del corso: ");
+            Scanner scanner = new Scanner(System.in);
+            String nomeCorso = scanner.nextLine();
+
+            System.out.println("Inserisci la nuova data di inizio");
+            String dataInizioString = scanner.nextLine();
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            LocalDate dataInizio = LocalDate.parse(dataInizioString, dateFormatter);
+            System.out.println("Inserisci durata: ");
+            int durata = scanner.nextInt();
+
+            System.out.println("Inserisci il nuovo id del docente: ");
+            int idDocente = scanner.nextInt();
+
+            DocenteService docenteService = new DocenteService();
+            Docente docente;
+
+            if(docenteService.getDocenteByID(idDocente).getid() == idDocente ){
+                docente = docenteService.getDocenteByID(idDocente);
+            }
+            else{
+                System.out.println("Nessun docente trovato con questo id");
+                return;
+            }
+
+            System.out.println("Inserisci il nuovo id del corso");
+            int id = scanner.nextInt();
+
+            CorsoService corsoService = new CorsoService();
+            corsoService.updateCorso(nomeCorso, dataInizio, durata, docente, id);
+
+        }
+
+        public static void deleteCorso(){
+            System.out.println("Elimina il corso con id: ");
+            Scanner scanner = new Scanner(System.in);
+            int id = scanner.nextInt();
+            CorsoService corsoService = new CorsoService();
+            corsoService.deleteCorso(id);
+        }
+
 }

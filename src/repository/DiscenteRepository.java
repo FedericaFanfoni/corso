@@ -30,10 +30,41 @@ public class DiscenteRepository {
             System.out.println("Connessione riuscita!");
             Statement stmt = c.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM discenti ORDER BY id asc");
+            CorsoRepository corsoRepository = new CorsoRepository();
             while (rs.next()) {
                 Discente discente = new Discente();
                 discente.setNome(rs.getString("nome"));
                 discente.setCognome(rs.getString("cognome"));
+                discente.setMatricola("matricola");
+                discente.setListaCorsi(corsoRepository.readCorsiOfDiscente(rs.getInt("id")));
+                discente.setid(rs.getInt("id"));
+                listaDiscenti.add(discente);
+            }
+
+        } catch (ClassNotFoundException | SQLException e) {
+            System.err.println(e.getMessage());
+            System.exit(0);
+        }
+        return listaDiscenti;
+    }
+
+    public ArrayList<Discente> readDiscentiOfCorso(int idCorso){
+        ArrayList<Discente> listaDiscenti = new ArrayList<>();
+        try {
+            Connection c = DbConnection.openConnection();
+            System.out.println("Connessione riuscita!");
+            Statement stmt = c.createStatement();
+            ResultSet rs = stmt.executeQuery(
+                    "SELECT d.nome, d.cognome, d.data_nascita, d.matricola, d.id FROM discenti d\n" +
+                    "JOIN corsiDiscenti cd ON cd.id_discente = d.id\n" +
+                    "JOIN corsi c ON c.id = cd.id_corso\n" +
+                    "WHERE c.id= " + idCorso
+            );
+            while (rs.next()) {
+                Discente discente = new Discente();
+                discente.setNome(rs.getString("nome"));
+                discente.setCognome(rs.getString("cognome"));
+                discente.setDataNascita(rs.getDate("data_nascita").toLocalDate());
                 discente.setid(rs.getInt("id"));
                 listaDiscenti.add(discente);
             }
