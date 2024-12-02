@@ -163,7 +163,7 @@ public class CorsoRepository {
             Connection c = DbConnection.openConnection();
             System.out.println("Connessione riuscita!");
             Statement stmt = c.createStatement();
-            stmt.execute("DELETE FROM corsi WHERE id = '" + corso.getId()+ "'");
+            stmt.execute("DELETE FROM corsi WHERE id = '" + idCorso + "'");
             System.out.println("model.dao.Corso eliminato");
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println(e.getMessage());
