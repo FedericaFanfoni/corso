@@ -29,12 +29,13 @@ public class Corso {
         this.id = id;
     }
 
-    public Corso(String nomeCorso, LocalDate dataInizio, int durata, Docente docente, ArrayList<Discente> listaDiscenti, int id ){
+    public Corso(String nomeCorso, LocalDate dataInizio, int durata, Docente docente, ArrayList<Discente> listaDiscenti, int id){
         this.nomeCorso = nomeCorso;
         this.dataInizio = dataInizio;
         this.durata = durata;
         this.docente = docente;
         this.listaDiscenti = listaDiscenti;
+        this.id = id;
     }
 
     public String getNomeCorso(){

@@ -35,7 +35,7 @@ public class DiscenteRepository {
                 Discente discente = new Discente();
                 discente.setNome(rs.getString("nome"));
                 discente.setCognome(rs.getString("cognome"));
-                discente.setMatricola("matricola");
+                discente.setMatricola(rs.getString("matricola"));
                 discente.setListaCorsi(corsoRepository.readCorsiOfDiscente(rs.getInt("id")));
                 discente.setid(rs.getInt("id"));
                 listaDiscenti.add(discente);

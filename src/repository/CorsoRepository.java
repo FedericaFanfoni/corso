@@ -32,8 +32,8 @@ public class CorsoRepository {
         try{
             Connection c = DbConnection.openConnection();
             Statement stmt = c.createStatement();
-            // Query con la JOIN
-            ResultSet rs = stmt.executeQuery("SELECT * FROM corsi JOIN DocenteTest dt ON dt.id = corsi.id_docente");
+            ResultSet rs = stmt.executeQuery(
+                    "SELECT * FROM corsi JOIN DocenteTest dt ON dt.id = corsi.id_docente");
             DiscenteRepository discenteRepository = new DiscenteRepository();
             while (rs.next()) {
 
@@ -43,7 +43,7 @@ public class CorsoRepository {
                 docente.setid(rs.getInt("id_docente"));
 
                 ArrayList<Discente> listaDiscenti;
-
+                System.out.println("Creazione dell'oggetto corso...");
                 Corso corso = new Corso(
                         rs.getString("nome_corso"),
                         rs.getDate("data_inizio").toLocalDate(),
